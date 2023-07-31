@@ -1,0 +1,31 @@
+pipeline {
+    agent any 
+    environment {
+        aws_access_key = credentials('aws_access_key')
+        aws_secret_access_key = credentials('aws_secret_access_key')
+        aws_default_region = "us-east-1"
+    }
+    stages {
+        stage("create an EKS cluster"){
+            steps {
+                script {
+                    dir('eks-cluster'){
+                        sh "terraform init"
+                        sh "terraform apply -auto-approve"
+                    }
+                }
+            }
+        }
+        stage("deploy to EKS"){
+            steps {
+                script {
+                    dir('kubernetes'){
+                        sh "aws eks update-kubeconfig --name jenkins-eks-cluster --region us-east-1"
+                        sh "kubectl apply -f deployment.yaml"
+                        sh "kubectl apply -f service.yaml"
+                    }
+                }
+            }
+        }
+    }
+}
