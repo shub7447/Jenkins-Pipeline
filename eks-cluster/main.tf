@@ -35,8 +35,8 @@ module "eks" {
     cluster_version = "1.24"
 
     cluster_endoint_public_access = true
-    vpc_id = module.jenkins_vpc.vpc_id
-    subnet_ids = module.jenkins_vpc.private_subnets
+    vpc_id = module.jenkins-vpc.vpc_id
+    subnet_ids = module.jenkins-vpc.private_subnets
 
     tags = {
 
